@@ -27,6 +27,14 @@ Define Handler using decorator:
         def get(self, id):
             pass
 
+        @subpage('/new', 'Neue News')
+        def get(self):
+            pass
+
+        @subpage('/new')
+        def post(self):
+            pass
+
         @subpage('/archive', 'Archiv')
         def get(self):
             pass
@@ -44,6 +52,7 @@ To get the menu structure you can then use:
 
     This will yield for the above example:
        '/news', 'News', <generator>, {icon: 'icon_news'}
+         '/news/new', 'Neue News', <generator>, {}
          '/news/archive', 'Archiv', <generator>, {}
 
 

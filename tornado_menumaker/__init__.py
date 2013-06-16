@@ -77,24 +77,3 @@ def subpage(url: str, caption: str=None, **kwargs):
         return router
 
     return subpage_decorator
-
-
-def subsubpage(url: str, caption: str=None, **kwargs):
-    """
-        Route for a subpage of a subpage
-
-        :param url: Url of this subpage (will be prefixed with page.url), must be prefixed with the url of the subpage
-        :param caption: Caption of the menu item (if omitted only route will be created)
-        :param kwargs: Additional arguments
-    """
-
-    def subpage_decorator(function: FunctionType):
-        """
-            Decorator for tornado_menumaker.subpage
-
-            :param function: Function
-        """
-        router = api.add_route(function=function, url=url, caption=caption, **kwargs)
-        return router
-
-    return subpage_decorator
