@@ -4,7 +4,6 @@
 
 """
 from collections import defaultdict
-import logging
 from types import FunctionType
 from tornado.web import RequestHandler, HTTPError
 
@@ -22,10 +21,6 @@ class Router(object):
     def __init__(self, name: str):
         self.name = name
         self.routes = defaultdict(list)
-
-    def __call__(self, *args, **kwargs):
-        logging.warning(args)
-        logging.warning(kwargs)
 
     def __get__(self, obj: RequestHandler, t=None):
         if obj is None:

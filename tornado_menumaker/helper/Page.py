@@ -4,7 +4,6 @@
 
 """
 import inspect
-import logging
 from tornado.web import RequestHandler, URLSpec
 
 from .Router import Router
@@ -35,7 +34,6 @@ class Page(object):
             urls.update(router.get('url'))
 
         for url in urls:
-            logging.error("Register: %s" % url)
             spec = URLSpec(url, self.handler)
             routes.append(spec)
             for router in routers:
