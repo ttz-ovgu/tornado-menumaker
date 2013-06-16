@@ -14,12 +14,12 @@ Usage
 Define Handler using decorator:
 
     import tornado.web
-    from tornado_menumaker import page, index, subpage, routes
+    from tornado_menumaker import page, index, subpage, api
 
     @page('/news', 'News', icon='icon-news')
     class NewsHandler(tornado.web.RequestHandler):
 
-        @index
+        @index()
         def get(self):
             pass
 
@@ -27,17 +27,17 @@ Define Handler using decorator:
         def get(self, id):
             pass
 
-        @subpage('/archive'), 'Archiv'):
+        @subpage('/archive', 'Archiv')
         def get(self):
             pass
 
-    t = tornado.web.Application(routes())
+    a = tornado.web.Application(api.routes())
 
 To get the menu structure you can then use:
 
     from tornado_menumaker import routes
 
-    for url, caption, sub_routes, kwargs in routes:
+    for url, caption, sub_routes, kwargs in api.items():
        ...
        for url, caption, subsub_routes, kwargs in sub_routes:
           ...
