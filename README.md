@@ -19,24 +19,24 @@ Define Handler using decorator:
     @page('/news', 'News', icon='icon-news')
     class NewsHandler(tornado.web.RequestHandler):
 
-        @index()
+        @index
         def get(self):
             pass
 
         @subpage('/show/(\d+)')
-        def get(self, id):
+        def show(self, id):
             pass
 
         @subpage('/new', 'Neue News')
-        def get(self):
+        def new(self):
             pass
 
-        @subpage('/new')
-        def post(self):
+        @new.post
+        def new(self):
             pass
 
         @subpage('/archive', 'Archiv')
-        def get(self):
+        def archive(self):
             pass
 
     a = tornado.web.Application(api.routes())

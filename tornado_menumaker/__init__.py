@@ -4,15 +4,14 @@
 
 """
 from types import FunctionType
-from tornado.web import RequestHandler
+from tornado_menumaker.helper.Page import Page
+from tornado_menumaker.helper.Route import Route
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 21:45'
 
-# Create ApiManager
-from .ApiManager import ApiManager
-
-api = ApiManager()
+_pages = []
+_routes = []
 
 
 def page(url: str, caption: str, **kwargs):
@@ -23,39 +22,19 @@ def page(url: str, caption: str, **kwargs):
         :param caption: Caption of the page
         :param kwargs: Additional arguments
     """
-
-    def page_decorator(handler: RequestHandler):
-        """
-            Decorator for tornado_menumaker.page
-
-            :param handler: RequestHandler
-        """
-        page = api.add_page(handler=handler, url=url, caption=caption, **kwargs)
-        handler._torn_page = page
-        return handler
-
-    return page_decorator
+    page = Page(url=url, caption=caption, **kwargs)
+    _pages.append(page)
+    return page
 
 
-def index(url: str=None, caption: str=None, **kwargs):
+def index(function: FunctionType):
     """
-        Route for index of page
+        Decorate method as index route
 
-        :param url: Alternative suburl to be registered (otherwise page.url will be used)
-        :param caption: Caption of the menu item (if omitted page.caption is used)
-        :param kwargs: Additional arguments
+        :param function: Body
     """
-
-    def index_decorator(function: FunctionType):
-        """
-            Decorator for tornado_menumaker.index
-
-            :param function: Function
-        """
-        router = api.add_route(function=function, url=url, caption=caption, **kwargs)
-        return router
-
-    return index_decorator
+    function._isindex = True
+    return function
 
 
 def subpage(url: str, caption: str=None, **kwargs):
@@ -66,14 +45,13 @@ def subpage(url: str, caption: str=None, **kwargs):
         :param caption: Caption of the menu item (if omitted only route will be created)
         :param kwargs: Additional arguments
     """
+    route = Route(url=url, caption=caption, **kwargs)
+    _routes.append(route)
+    return route
 
-    def subpage_decorator(function: FunctionType):
-        """
-            Decorator for tornado_menumaker.subpage
 
-            :param function: Function
-        """
-        router = api.add_route(function=function, url=url, caption=caption, **kwargs)
-        return router
-
-    return subpage_decorator
+def routes():
+    """
+        Return all registered routes
+    """
+    return _routes + _pages

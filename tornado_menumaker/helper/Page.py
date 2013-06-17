@@ -4,40 +4,42 @@
 
 """
 import inspect
-from tornado.web import RequestHandler, URLSpec
+from nose.pyversion import ClassType
+from tornado.web import URLSpec, Application
 
-from .Router import Router
+from .Route import Route
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 23:46'
 
 
-class Page(object):
+class Page(URLSpec):
     """
         A Page
     """
 
-    def __init__(self, handler: RequestHandler, url: str=None, caption: str=None, **kwargs):
-        self.handler = handler
-        self.url = url
-        self.caption = caption
-        self.kwargs = kwargs
+    def __init__(self, url: str=None, **kwargs):
+        super().__init__(url, self, kwargs=kwargs)
 
-    @property
-    def routes(self):
-        urls = set()
-        routers = []
-        routes = []
+        self._url = url
+        self._index = None
 
-        for name, router in inspect.getmembers(self.handler, Router.isinstance):
-            routers.append(router)
-            urls.update(router.get('url'))
+    def __call__(self, *args, **kwargs):
+        if isinstance(args[0], Application):
+            self.handler = self.cls(*args)
 
-        for url in urls:
-            spec = URLSpec(url, self.handler)
-            routes.append(spec)
-            for router in routers:
-                for route in router.find(url=url):
-                    route.spec = spec
+            if self._index is not None:
+                self.handler.get = self._index.__get__(self.handler)
 
-        return routes
+            return self.handler
+        elif isinstance(args[0], ClassType):
+            self.cls = args[0]
+
+            for n, route in inspect.getmembers(self.cls, Route.isroute):
+                route.url = self._url + route.url
+                route.cls = self.cls
+
+            for n, method in inspect.getmembers(self.cls, Route.isindex):
+                self._index = method
+
+            return self
