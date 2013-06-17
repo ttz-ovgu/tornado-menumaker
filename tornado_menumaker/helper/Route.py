@@ -3,13 +3,16 @@
 """
 
 """
+from functools import partial
 import inspect
 import re
 from types import FunctionType
-from tornado.web import URLSpec, Application
+from tornado.web import URLSpec, Application, RequestHandler
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 23:48'
+
+SUPPORTED_METHODS = RequestHandler.SUPPORTED_METHODS
 
 
 class Route(URLSpec):
@@ -21,6 +24,7 @@ class Route(URLSpec):
         super().__init__(url, self, kwargs=kwargs)
 
         self._url = url
+        self._routing = {}
 
     @property
     def url(self):
@@ -45,19 +49,37 @@ class Route(URLSpec):
              "positional: %r" % self.regex.pattern)
         self._path, self._group_count = self._find_groups()
 
+    def __getattribute__(self, item):
+        try:
+            return super().__getattribute__(item)
+        except AttributeError:
+            if item.upper() in SUPPORTED_METHODS:
+                return partial(self.register, method=item.lower())
+
+    def register(self, function: FunctionType, method: str):
+        """
+            Register a method function
+
+            :param function: Function to be registered
+            :param method: Name of method
+        """
+        self._routing[method] = function
+        return self
+
     def __call__(self, *args, **kwargs):
         if isinstance(args[0], FunctionType):
-            self.function = args[0]
+            self._routing['get'] = args[0]
+            self.__module__ = inspect.getmodule(args[0])
+            self.__module__ = args[0].__qualname__.rsplit(".", 3)[-2]
             return self
         elif isinstance(args[0], Application):
             try:
                 self.handler = self.cls(*args)
             except AttributeError:
-                module = inspect.getmodule(self.function)
-                cls_name = self.function.__qualname__.rsplit(".", 3)[-2]
-                self.cls = getattr(module, cls_name)
+                self.cls = getattr(self.__module__, self.__module__)
                 self.handler = self.cls(*args)
-            self.handler.get = self.function.__get__(self.handler)
+            for method, function in self._routing.items():
+                setattr(self.handler, method, function.__get__(self.handler))
             return self.handler
 
     @classmethod
