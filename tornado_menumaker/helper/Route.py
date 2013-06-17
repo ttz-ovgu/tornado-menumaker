@@ -20,11 +20,12 @@ class Route(URLSpec):
         A route
     """
 
-    def __init__(self, url: str=None, **kwargs):
+    def __init__(self, url: str=None, caption: str=None, **kwargs):
         super().__init__(url, self, kwargs=kwargs)
 
         self._url = url
         self._routing = {}
+        self._caption = caption
 
     @property
     def url(self):
@@ -66,21 +67,28 @@ class Route(URLSpec):
         self._routing[method] = function
         return self
 
+    def __get__(self, instance, cls):
+        if instance is None:
+            return self
+        return self._routing['get'].__get__(instance, cls)
+
     def __call__(self, *args, **kwargs):
         if isinstance(args[0], FunctionType):
             self._routing['get'] = args[0]
             self.__module__ = inspect.getmodule(args[0])
-            self.__module__ = args[0].__qualname__.rsplit(".", 3)[-2]
+            self.__clsname__ = args[0].__qualname__.rsplit(".", 3)[-2]
+            self.name = "%s.%s" % (self.__module__, args[0].__qualname__)
             return self
         elif isinstance(args[0], Application):
             try:
-                self.handler = self.cls(*args)
+                self.handler = self.cls(*args, **kwargs)
             except AttributeError:
-                self.cls = getattr(self.__module__, self.__module__)
-                self.handler = self.cls(*args)
+                self.cls = getattr(self.__module__, self.__clsname__)
+                self.handler = self.cls(*args, **kwargs)
             for method, function in self._routing.items():
                 setattr(self.handler, method, function.__get__(self.handler))
             return self.handler
+        raise Exception()
 
     @classmethod
     def isroute(cls, other: object) -> bool:

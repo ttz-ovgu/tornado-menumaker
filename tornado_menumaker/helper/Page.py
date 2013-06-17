@@ -18,9 +18,10 @@ class Page(URLSpec):
         A Page
     """
 
-    def __init__(self, url: str=None, **kwargs):
+    def __init__(self, url: str=None, caption: str=None, **kwargs):
         super().__init__(url, self, kwargs=kwargs)
 
+        self._caption = caption
         self._url = url
         self._index = None
 
