@@ -4,7 +4,6 @@
 
 """
 import inspect
-from nose.pyversion import ClassType
 from tornado.web import URLSpec, Application
 
 from .Route import Route
@@ -18,10 +17,9 @@ class Page(URLSpec):
         A Page
     """
 
-    def __init__(self, url: str=None, caption: str=None, **kwargs):
+    def __init__(self, url: str=None, **kwargs):
         super().__init__(url, self, kwargs=kwargs)
 
-        self._caption = caption
         self._url = url
         self._index = None
 
@@ -33,7 +31,7 @@ class Page(URLSpec):
                 self.handler.get = self._index.__get__(self.handler)
 
             return self.handler
-        elif isinstance(args[0], ClassType):
+        elif isinstance(args[0], object):
             self.cls = args[0]
 
             for n, route in inspect.getmembers(self.cls, Route.isroute):

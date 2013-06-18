@@ -17,15 +17,14 @@ SUPPORTED_METHODS = RequestHandler.SUPPORTED_METHODS
 
 class Route(URLSpec):
     """
-        A route
+        Represent a route
     """
 
-    def __init__(self, url: str=None, caption: str=None, **kwargs):
+    def __init__(self, url: str=None, **kwargs):
         super().__init__(url, self, kwargs=kwargs)
 
         self._url = url
         self._routing = {}
-        self._caption = caption
 
     @property
     def url(self):
@@ -87,6 +86,7 @@ class Route(URLSpec):
                 self.handler = self.cls(*args, **kwargs)
             for method, function in self._routing.items():
                 setattr(self.handler, method, function.__get__(self.handler))
+            self.handler.route = self
             return self.handler
         raise Exception()
 
