@@ -25,7 +25,7 @@ class Page(URLSpec):
 
     def __call__(self, *args, **kwargs):
         if isinstance(args[0], Application):
-            self.handler = self.cls(*args)
+            self.handler = self.cls(*args, **kwargs)
 
             if self._index is not None:
                 self.handler.get = self._index.__get__(self.handler)
