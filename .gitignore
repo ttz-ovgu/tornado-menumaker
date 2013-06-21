@@ -40,3 +40,5 @@ nosetests.xml
 # system
 nohup.out
 
+# Ignore tests
+tests
