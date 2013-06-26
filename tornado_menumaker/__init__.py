@@ -74,7 +74,7 @@ def routes():
     return _routes + _pages
 
 
-def items(check='caption'):
+def items(check: str='caption'):
     """
         Return all elements in ordered menu tree structure
 
@@ -83,11 +83,12 @@ def items(check='caption'):
         :param check: Check for existant of this keyword in kwargs when yelling
     """
 
-    def _items(top: int, data: list):
+    def _items(top: int, routes: list):
         def _key(route: Route) -> str:
             return '/'.join(route.url.split('/', top)[:-1])
 
-        for name, routes in groupby(sorted(data, key=_key), key=_key):
+        for name, routes in groupby(sorted(routes, key=_key), key=_key):
+            routes = list(routes)
             if len(routes) == 1:
                 route = routes[0]
                 if not check in route.kwargs or route.kwargs[check] is None:
@@ -97,7 +98,7 @@ def items(check='caption'):
                 _items(top + 1, routes)
 
     for page in _pages:
-        routes = inspect.getmembers(page, Route.isroute)
+        routes = [route for name, route in inspect.getmembers(page, Route.isroute)]
         if not check in page.kwargs or page.kwargs[check] is None:
             continue
         yield 0, page.url, page.kwargs[check], _items(1, routes), page.kwargs
