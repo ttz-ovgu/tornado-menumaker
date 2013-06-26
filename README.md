@@ -43,17 +43,17 @@ Define Handler using decorator:
 
 To get the menu structure you can then use:
 
-    from tornado_menumaker import routes
+    from tornado_menumaker import items
 
-    for url, caption, sub_routes, kwargs in api.items():
+    for level, url, caption, sub_routes, kwargs in items():
        ...
-       for url, caption, subsub_routes, kwargs in sub_routes:
+       for level, url, caption, subsub_routes, kwargs in sub_routes:
           ...
 
     This will yield for the above example:
-       '/news', 'News', <generator>, {icon: 'icon_news'}
-         '/news/new', 'Neue News', <generator>, {}
-         '/news/archive', 'Archiv', <generator>, {}
+       0, '/news', 'News', <generator>, {icon: 'icon_news'}
+         1, '/news/new', 'Neue News', <generator>, {}
+         1, '/news/archive', 'Archiv', <generator>, {}
 
 
 

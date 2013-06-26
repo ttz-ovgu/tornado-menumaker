@@ -90,6 +90,10 @@ class Route(URLSpec):
             return self.handler
         raise Exception()
 
+    def __repr__(self):
+        return '%s(%s, kwargs=%r, name=%r)' % \
+               (self.__class__.__name__, self.url, self.kwargs, self.name)
+
     @classmethod
     def isroute(cls, other: object) -> bool:
         """

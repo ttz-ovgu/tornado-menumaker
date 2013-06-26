@@ -19,7 +19,7 @@ class Page(Route):
     """
 
     def __init__(self, url: str=None, **kwargs):
-        super().__init__(url=url, kwargs=kwargs)
+        super().__init__(url=url, **kwargs)
 
         self._index = None
 
