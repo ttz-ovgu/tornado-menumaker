@@ -99,12 +99,3 @@ class Route(URLSpec):
         """
         return isinstance(other, cls)
 
-    @classmethod
-    def isindex(cls, other: object) -> bool:
-        """
-            Is this the index method?
-
-            :param other: Object to compare
-        """
-        return inspect.isfunction(other) and hasattr(other, '_isindex')
-

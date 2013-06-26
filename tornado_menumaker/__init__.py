@@ -6,8 +6,9 @@
 import inspect
 from itertools import groupby
 from types import FunctionType
-from tornado_menumaker.helper.Page import Page
-from tornado_menumaker.helper.Route import Route
+from .helper.Page import Page
+from .helper.Route import Route
+from .helper.Index import IndexRoute
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 21:45'
@@ -31,12 +32,26 @@ def page(url: str, caption: str, **kwargs):
 
 def index(function: FunctionType):
     """
-        Decorate method as index route
+        Decorate method as index route (will be available via page.url)
 
         :param function: Body
     """
-    function._isindex = True
-    return function
+    index = IndexRoute()(function)
+    _routes.append(index)
+    return index
+
+
+def indexpage(url: str, caption: str=None, **kwargs):
+    """
+        Route for the index
+
+        :param url: Url of the indexpage (will be prefixed with page.url)
+        :param caption: Caption of the menu item (if omitted only route will be created)
+        :param kwargs: Additional arguments
+    """
+    route = IndexRoute(url=url, caption=caption, **kwargs)
+    _routes.append(route)
+    return route
 
 
 def subpage(url: str, caption: str=None, **kwargs):
