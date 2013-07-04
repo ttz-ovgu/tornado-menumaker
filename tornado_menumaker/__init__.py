@@ -3,7 +3,6 @@
 """
 
 """
-import inspect
 from itertools import groupby
 from types import FunctionType
 from .helper.Page import Page
@@ -88,7 +87,7 @@ def items(check: str='caption'):
             return '/'.join(route.url.split('/')[:top + 1])
 
         for name, routes in groupby(sorted(lroutes, key=_key), key=_key):
-            routes = list(routes)
+            routes = sorted(list(routes), key=_key)
             if len(routes) == 1:
                 route = routes[0]
                 if not check in route.kwargs or route.kwargs[check] is None:
@@ -100,12 +99,7 @@ def items(check: str='caption'):
                     continue
                 yield top, route.url, route.kwargs[check], _items(top + 1, routes[1:]), route.kwargs
             else:
-                for item in _items(top + 1, routes):
-                    yield item
+                yield from _items(top + 1, routes)
 
-    for page in _pages:
-        routes = [route for name, route in inspect.getmembers(page.cls, Route.isroute)]
-        if not check in page.kwargs or page.kwargs[check] is None:
-            continue
-        yield 0, page.url, page.kwargs[check], _items(1, routes), page.kwargs
+    yield from _items(1, _pages + _routes)
 
