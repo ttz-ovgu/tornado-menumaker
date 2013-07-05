@@ -40,5 +40,5 @@ class Page(Route):
             for n, method in inspect.getmembers(self.cls, IndexRoute.isindex):
                 self._index = method
 
-            return self
+            return self.cls
         raise Exception()
