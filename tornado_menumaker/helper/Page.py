@@ -34,11 +34,12 @@ class Page(Route):
             self.cls = args[0]
 
             for n, route in inspect.getmembers(self.cls, Route.isroute):
-                route.url = self._url + route.url
+                route.url = self._url.rstrip('/') + '/' + route.url.lstrip('/')
                 route.cls = self.cls
 
             for n, method in inspect.getmembers(self.cls, IndexRoute.isindex):
                 self._index = method
 
             return self.cls
-        raise Exception()
+        raise TypeError("%s is not decorating a class, use @subpage for decorating a method" % (
+        len(args[0]) and type(args[0]) or "@page"))
