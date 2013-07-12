@@ -86,9 +86,11 @@ def items(check: str='caption'):
         def _key(route: Route) -> str:
             return '/'.join(route.url.split('/')[:top + 1])
 
-        for name, routes in groupby(sorted(lroutes, key=_key), key=_key):
-            routes = sorted(list(routes), key=_key)
-            if len(routes) == 1:
+        for name, routes in groupby(lroutes, key=_key):
+            routes = list(routes)
+            if len(routes) == 0:
+                return []
+            elif len(routes) == 1:
                 route = routes[0]
                 if not check in route.kwargs or route.kwargs[check] is None:
                     continue
@@ -96,8 +98,9 @@ def items(check: str='caption'):
             elif routes[0].url == name:
                 route = routes[0]
                 if not check in route.kwargs or route.kwargs[check] is None:
-                    continue
-                yield top, route.url, route.kwargs[check], _items(top + 1, routes[1:]), route.kwargs
+                    yield from _items(top + 1, routes[1:])
+                else:
+                    yield top, route.url, route.kwargs[check], _items(top + 1, routes[1:]), route.kwargs
             else:
                 yield from _items(top + 1, routes)
 
