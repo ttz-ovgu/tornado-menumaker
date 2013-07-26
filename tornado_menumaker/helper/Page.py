@@ -29,6 +29,7 @@ class Page(Route):
                 return self._index(*args, **kwargs)
 
             self.handler = self.cls(*args, **kwargs)
+            self.handler.reverse_url_name = self.name
             return self.handler
         elif isinstance(args[0], type):
             self.cls = args[0]
@@ -41,5 +42,5 @@ class Page(Route):
                 self._index = method
 
             return self.cls
-        raise TypeError("%s is not decorating a class, use @subpage for decorating a method" % (
-        len(args[0]) and type(args[0]) or "@page"))
+        raise TypeError("%s is not decorating a class, "
+                        "use @subpage for decorating a method" % (len(args[0]) and type(args[0]) or "@page"))
