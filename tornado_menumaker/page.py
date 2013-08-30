@@ -6,8 +6,8 @@
 import inspect
 from tornado.web import Application
 
-from .Route import Route
-from .Index import IndexRoute
+from .route import Route
+from .index import IndexRoute
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 23:46'

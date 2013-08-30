@@ -5,9 +5,10 @@
 """
 from itertools import groupby
 from types import FunctionType
-from .helper.Page import Page
-from .helper.Route import Route
-from .helper.Index import IndexRoute
+
+from .route import Route
+from .index import IndexRoute
+from .page import Page
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '16.06.13 - 21:45'

@@ -4,7 +4,7 @@
 
 """
 
-from .Route import Route
+from .route import Route
 
 __author__ = 'Martin Martimeo <martin@martimeo.de>'
 __date__ = '26.06.13 - 14:25'

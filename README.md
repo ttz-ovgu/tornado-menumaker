@@ -14,7 +14,7 @@ Usage
 Define Handler using decorator:
 
     import tornado.web
-    from tornado_menumaker import page, index, subpage, api
+    from tornado_menumaker import page, index, subpage, routes
 
     @page('/news', 'News', icon='icon-news')
     class NewsHandler(tornado.web.RequestHandler):
@@ -39,7 +39,7 @@ Define Handler using decorator:
         def archive(self):
             pass
 
-    a = tornado.web.Application(api.routes())
+    a = tornado.web.Application(routes())
 
 To get the menu structure you can then use:
 
