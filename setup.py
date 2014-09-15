@@ -10,7 +10,7 @@ from distutils.core import setup
 
 setup(
     name='Tornado-Menumaker',
-    version='0.1.1',
+    version='0.1.2',
     author='Martin Martimeo',
     author_email='martin@martimeo.de',
     url='https://github.com/MartinMartimeo/tornado-menumaker',
