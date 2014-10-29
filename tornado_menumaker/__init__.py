@@ -17,15 +17,16 @@ _pages = []
 _routes = []
 
 
-def page(url: str, caption: str, **kwargs):
+def page(url: str, caption: str, menu_pos: int=100, **kwargs):
     """
         Decorate a handler to act as a menumaker page
 
         :param url: Prefix for all routes of this handler
         :param caption: Caption of the page
+        :param menu_pos: Position in menu (defaul = 100)
         :param kwargs: Additional arguments
     """
-    page = Page(url=url, caption=caption, **kwargs)
+    page = Page(url=url, caption=caption, menu_pos=menu_pos, **kwargs)
     _pages.append(page)
     return page
 
@@ -105,5 +106,5 @@ def items(check: str='caption'):
             else:
                 yield from _items(top + 1, routes)
 
-    yield from _items(1, _pages + _routes)
+    yield from _items(1, sorted(_pages, key=lambda x: x.kwargs['menu_pos']) + _routes)
 
