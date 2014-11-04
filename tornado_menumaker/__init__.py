@@ -81,7 +81,7 @@ def items(check: str='caption'):
 
         yields level, url, kwargs[check], subroutes, kwargs
 
-        :param check: Check for existant of this keyword in kwargs when yelling
+        :param check: Check for existing of this keyword in kwargs when yelling
     """
 
     def _items(top: int, lroutes: list):
